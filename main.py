@@ -3,23 +3,40 @@ import requests
 import folium
 from streamlit_folium import folium_static
 import math
+from PIL import Image
+import base64
 
 # Desativar a observação de arquivos para o Streamlit no Docker
 # st.set_option('server.headless', True)
 
-# Set the background image
-background_image = """
-<style>
-[data-testid="stAppViewContainer"] > .main {
-    background-image: url("https://wallpapers.com/images/featured/world-map-desktop-377awf240ap812jp.jpg");
-    background-size: 100vw 100vh;  # This sets the size to cover 100% of the viewport width and height
-    background-position: center;  
-    background-repeat: no-repeat;
-}
-</style>
-"""
+# Read and decode the image using PIL
+image_path = './static/bg.jpg'
+# image = Image.open(image_path)
 
-st.markdown(background_image, unsafe_allow_html=True)
+# Display the decoded image using st.image
+# st.image(image, use_column_width=True)
+
+# Function to get base64 of binary file
+
+def get_base64_of_bin_file(bin_file):
+    with open(bin_file, 'rb') as f:
+        data = f.read()
+    return base64.b64encode(data).decode()
+
+# Get base64 string of the image
+image_base64 = get_base64_of_bin_file('./static/bg.jpg')
+
+# Use the base64 string in the CSS for background
+st.markdown(f"""
+<style>
+[data-testid="stAppViewContainer"] > .main {{
+    background-image: url("data:image/jpeg;base64,{image_base64}");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}}
+</style>
+""", unsafe_allow_html=True)
 
 # Chave de API da OpenWeatherMap (substitua pela sua chave)
 API_KEY = "a5676ce9dbe81f9ddad2125c4dedb9b6"
